@@ -764,6 +764,26 @@ nav a {
   .pconly {
     display: none;
   }
+  .voting-container {
+    position: fixed;
+    top: 40%;
+    height: 40%;
+    width: 100%;
+    padding-top: var(--gap-1);
+    padding-bottom: var(--gap-1);
+    box-sizing: border-box;
+    transform: translate3d(0px, 50%, 0px);
+  }
+  #menu_select,
+  .voting-list {
+    width: 90%;
+    margin: auto;
+  }
+  #placesList [class*="item-"],
+  #menu_voted li,
+  .store-card {
+    margin-right: 0;
+  }
 }
 @media (max-width: 650px) {
   .vote-list-container .card {
