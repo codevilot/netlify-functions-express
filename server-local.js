@@ -1,6 +1,6 @@
 "use strict";
-// const express = __non_webpack_require__("express");
-const express = require("express");
+const express = __non_webpack_require__("express");
+// const express = require("express");
 const path = require("path");
 const serverless = require("serverless-http");
 const app = express();
