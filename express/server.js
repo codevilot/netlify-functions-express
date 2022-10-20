@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const router = express.Router();
 router.get("/", (req, res) => {
   const { page } = req.params;
-  res.sendFile(path.join(__dirname, `public/database/${page}.json`));
+  res.sendFile(path.join(__dirname, `../public/database/${page}.json`));
 });
 router.get("/another", (req, res) => res.json({ route: req.originalUrl }));
 router.post("/", (req, res) => res.json({ postBody: req.body }));
