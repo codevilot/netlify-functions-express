@@ -17,7 +17,7 @@ const Voting = async (params) => {
     doc.forEach((docs) => {
       voteItem = docs.data();
     });
-
+    kakao.vote = voteItem;
     return voteItem;
   };
 
@@ -38,6 +38,7 @@ const Voting = async (params) => {
         ? { ...store, countVote: store.countVote + 1 }
         : store
     );
+    console.log(voteItem.stores);
     await db.collection("votes").doc(voteId).update({ stores: newStoreList });
   };
 
@@ -121,7 +122,6 @@ const Voting = async (params) => {
   `);
 
   const voteItem = await getVoteItem(params);
-  kakao.vote = voteItem.stores;
 
   window.addEventListener("click", handleCompleteVote);
 

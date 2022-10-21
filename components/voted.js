@@ -17,7 +17,7 @@ const Voted = async params => {
     doc.forEach(docs => {
       voteItem = docs.data();
     })
-
+    kakao.vote = voteItem
     return voteItem
   }
 
@@ -46,7 +46,7 @@ const Voted = async params => {
     </div>`)
 
   const voteItem = await getVoteItem(params);
-  kakao.vote = voteItem.stores;
+
   const sortedStores = getSortedStores(voteItem.stores)
 
   return domStr(sortedStores)

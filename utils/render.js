@@ -54,7 +54,8 @@ const render = async (url) => {
       document.querySelector("#root .voting #kakao-map")
     ) {
       kakao.setMap.insert(document.querySelector("#root #kakao-map"));
-      kakao.setMap.marker(kakao.vote);
+      console.log(kakao.vote);
+      kakao.setMap.marker(kakao.vote.stores);
     }
   } catch (err) {
     console.error(err);
