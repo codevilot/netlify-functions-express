@@ -1,6 +1,6 @@
-import createElement from '../utils/createElement.js';
-import { db } from '../utils/firebase.js';
-import Nav from './nav.js';
+import createElement from "../utils/createElement.js";
+import { db } from "../utils/firebase.js";
+import Nav from "./nav.js";
 // prettier-ignore
 const Voted = async params => {
 
@@ -46,6 +46,7 @@ const Voted = async params => {
     </div>`)
 
   const voteItem = await getVoteItem(params);
+  kakao.vote = voteItem.stores;
   const sortedStores = getSortedStores(voteItem.stores)
 
   return domStr(sortedStores)
