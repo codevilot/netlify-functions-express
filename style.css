@@ -760,6 +760,12 @@ nav a {
 }
 /* voting end */
 @media (max-width: 800px) {
+  .member-title {
+    padding-top: calc(var(--nav-height) + 3rem);
+  }
+  :root {
+    --nav-height: 3.5rem;
+  }
   .vote-list-container .card {
     width: calc(50% - 0.5rem);
   }
