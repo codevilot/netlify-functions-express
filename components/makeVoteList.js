@@ -15,7 +15,22 @@ const makeVoteList = (params) => {
   });
 
   window.addEventListener("click", async (e) => {
-    console.log(e.target);
+    if (e.target.closest("#menu_select")) {
+      document
+        .querySelector("#menu_select")
+        .addEventListener("click", ({ target }) => {
+          if (
+            target.closest("li") &&
+            target.closest("li").className.includes("item") &&
+            !target.matches(".add-store")
+          ) {
+            const id = target.closest("li").className.split("-")[1];
+            document.querySelector(
+              "#store-detail"
+            ).innerHTML = `<iframe style="height: 100vh;" src="https://place.map.kakao.com/m/${id}">`;
+          }
+        });
+    }
     if (e.target.matches(".add-store")) {
       const $store = e.target.closest("li");
       const selectedStore = {
@@ -35,22 +50,6 @@ const makeVoteList = (params) => {
 
       e.target.disabled = true;
       renderSelectedStoreList(selectedStoreList);
-    }
-    if (e.target.matches("#menu_select")) {
-      document
-        .querySelector("#menu_select")
-        .addEventListener("click", ({ target }) => {
-          if (
-            target.closest("li") &&
-            target.closest("li").className.includes("item") &&
-            !target.matches(".add-store")
-          ) {
-            const id = target.closest("li").className.split("-")[1];
-            document.querySelector(
-              "#store-detail"
-            ).innerHTML = `<iframe style="height: 100vh;" src="https://place.map.kakao.com/m/${id}">`;
-          }
-        });
     }
   });
 
