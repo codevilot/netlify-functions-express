@@ -2,6 +2,7 @@ import createElement from "../utils/createElement.js";
 import route from "../utils/route.js";
 import render from "../utils/render.js";
 import { db } from "../utils/firebase.js";
+
 import Nav from "./nav.js";
 
 const Home = async () => {
@@ -54,7 +55,10 @@ const Home = async () => {
           <div class="vote-name">
             ${title}
             <input class="copy-value" value="${window.location.origin}${isVoting(deadline) ? `/voting/:${id}` : `/voted/:${id}`}"/>
+            <div class="button-nav">
             <button class="vote-link">링크공유</button>
+            <button class="qr-link">QR</button>
+            </div>
           </div>
           <div class="vote-date">${deadline}</div>
           <div class="stores">
@@ -68,6 +72,7 @@ const Home = async () => {
       `}).join('')}
     </div>
     </div>
+    <div id="qr"></div>
     `;
 
   const voteItems = await getUserVoteList();
@@ -82,6 +87,20 @@ const $root = document.getElementById("root");
 // 투표 목록 추가 버튼
 
 $root.addEventListener("click", (e) => {
+  if (e.target.closest(".qr-link")) {
+    const qrElement = document.querySelector("#qr");
+
+    qrElement.classList.add("active");
+    var qrInstance = new QRCode("qr");
+
+    qrInstance.makeCode(
+      e.target.closest(".vote-name").querySelector(".copy-value").value
+    );
+  }
+  if (e.target.matches("#qr")) {
+    document.getElementById("qr").classList.remove("active");
+    document.getElementById("qr").innerHTML = ``;
+  }
   if (e.target.closest(".add-vote")) render(route(e));
   if (e.target.matches(".more-vote")) render(route(e));
   if (e.target.closest(".vote-link")) {

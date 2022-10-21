@@ -715,11 +715,40 @@ nav a {
 .empty-store {
   font-size: var(--item-subtitle);
 }
-.vote-link {
+.button-nav {
+  display: flex;
+  gap: var(--gap);
+}
+#qr.active {
+  width: 50vw;
+  height: 50vw;
+  position: fixed;
+  top: 25%;
+  z-index: 5;
+  background-color: var(--white-color);
+  left: 25%;
+}
+#qr.active::before {
+  content: "⨉";
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 2rem;
+}
+#qr img {
+  display: block;
+  width: 80%;
+  margin: auto;
+  margin-top: 10%;
+  border: 50px;
+  box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
+}
+.vote-link,
+.qr-link {
   text-align: center;
   background-color: var(--primary-color);
   border-radius: 50px;
-  display: block;
+
   margin-top: 0.3rem;
   margin-bottom: 0.3rem;
   box-sizing: border-box;
