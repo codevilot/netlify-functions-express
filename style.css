@@ -720,13 +720,14 @@ nav a {
   gap: var(--gap);
 }
 #qr.active {
-  width: 50vw;
-  height: 50vw;
+  width: 50vmin;
+  height: 50vmin;
   position: fixed;
-  top: 25%;
+  top: 50%;
   z-index: 5;
   background-color: var(--white-color);
-  left: 25%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
 }
 #qr.active::before {
   content: "⨉";
@@ -789,6 +790,12 @@ nav a {
 }
 /* voting end */
 @media (max-width: 800px) {
+  #login,
+  #register,
+  #add,
+  #welcome {
+    width: 90%;
+  }
   .member-title {
     padding-top: calc(var(--nav-height) + 3rem);
   }
