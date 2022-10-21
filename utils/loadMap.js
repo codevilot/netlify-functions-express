@@ -1,7 +1,7 @@
-import fetchImage from './fetchimage.js';
-
+import fetchImage from "./fetchimage.js";
+import { db } from "./firebase.js";
 const appendKakaoAPI = () => {
-  const script = document.createElement('script');
+  const script = document.createElement("script");
   //prettier-ignore
   script.src ='//dapi.kakao.com/v2/maps/sdk.js?appkey=c8627785e5fed8e94625831777adf1ea&libraries=services&autoload=false';
   document.head.appendChild(script);
@@ -11,8 +11,8 @@ const appendKakaoAPI = () => {
 const makeMap = () => {
   var markers = [];
   var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-  const mapContainer = document.createElement('div');
-  mapContainer.id = 'map';
+  const mapContainer = document.createElement("div");
+  mapContainer.id = "map";
   var mapOption = {
     center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
     level: 3, // 지도의 확대 레벨
@@ -22,7 +22,7 @@ const makeMap = () => {
   var map = new kakao.maps.Map(mapContainer, mapOption);
   // 장소 검색 객체를 생성합니다
   var ps = new kakao.maps.services.Places();
-  const search = keyword => ps.keywordSearch(keyword, placesSearchCB);
+  const search = (keyword) => ps.keywordSearch(keyword, placesSearchCB);
 
   var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
@@ -36,21 +36,21 @@ const makeMap = () => {
       // 페이지 번호를 표출합니다
       displayPagination(pagination);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-      alert('검색 결과가 존재하지 않습니다.');
+      alert("검색 결과가 존재하지 않습니다.");
       return;
     } else if (status === kakao.maps.services.Status.ERROR) {
-      alert('검색 결과 중 오류가 발생했습니다.');
+      alert("검색 결과 중 오류가 발생했습니다.");
       return;
     }
   }
 
   // 검색 결과 목록과 마커를 표출하는 함수입니다
   function displayPlaces(places) {
-    var listEl = document.getElementById('placesList'),
-      menuEl = document.getElementById('menu_wrap'),
+    var listEl = document.getElementById("placesList"),
+      menuEl = document.getElementById("menu_wrap"),
       fragment = document.createDocumentFragment(),
       bounds = new kakao.maps.LatLngBounds(),
-      listStr = '';
+      listStr = "";
 
     removeAllChildNods(listEl);
 
@@ -63,11 +63,11 @@ const makeMap = () => {
       bounds.extend(placePosition);
 
       (function (marker, title) {
-        kakao.maps.event.addListener(marker, 'mouseover', function () {
+        kakao.maps.event.addListener(marker, "mouseover", function () {
           displayInfowindow(marker, title);
         });
 
-        kakao.maps.event.addListener(marker, 'mouseout', function () {
+        kakao.maps.event.addListener(marker, "mouseout", function () {
           infowindow.close();
         });
 
@@ -93,29 +93,33 @@ const makeMap = () => {
 
   // 검색결과 항목을 Element로 반환하는 함수입니다
   function getListItem(index, places) {
-    const selectedStoreId = [...document.getElementById('menu_voted')?.querySelectorAll('li')].map(store => store.id);
-    var el = document.createElement('li'),
+    const selectedStoreId = [
+      ...document.getElementById("menu_voted")?.querySelectorAll("li"),
+    ].map((store) => store.id);
+    var el = document.createElement("li"),
       itemStr = `
         <div class="store-name">${places.place_name}</div>
         <div class="store-description">${places.category_name}</div>
         <span class="tel">${places.phone}</span>
-        <button class="add-store" ${selectedStoreId.includes(places.id) ? 'disabled' : ''}>추가하기</button>
+        <button class="add-store" ${
+          selectedStoreId.includes(places.id) ? "disabled" : ""
+        }>추가하기</button>
         <div class="x hidden">${places.x}</div>
         <div class="y hidden">${places.y}</div>
         `;
     el.innerHTML = itemStr;
-    el.className = 'item-' + places.id;
+    el.className = "item-" + places.id;
     fetchImage(places.place_name).then(({ data }) => {
       el.insertAdjacentHTML(
-        'beforeend',
+        "beforeend",
         "<div class='store-images'>" +
           data.documents
             .map(
-              store =>
+              (store) =>
                 `<div class="store-image" style="background-image: url(${store.thumbnail_url});background-size: contain;"></div>`
             )
-            .join('') +
-          '</div>'
+            .join("") +
+          "</div>"
       );
     });
     return el;
@@ -123,7 +127,8 @@ const makeMap = () => {
 
   // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
   function addMarker(position, idx, title) {
-    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+    var imageSrc =
+        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png", // 마커 이미지 url, 스프라이트 이미지를 씁니다
       imageSize = new kakao.maps.Size(36, 37), // 마커 이미지의 크기
       imgOptions = {
         spriteSize: new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
@@ -152,7 +157,7 @@ const makeMap = () => {
 
   // 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
   function displayPagination(pagination) {
-    var paginationEl = document.getElementById('pagination'),
+    var paginationEl = document.getElementById("pagination"),
       fragment = document.createDocumentFragment(),
       i;
 
@@ -162,12 +167,12 @@ const makeMap = () => {
     }
 
     for (i = 1; i <= pagination.last; i++) {
-      var el = document.createElement('a');
-      el.href = '#';
+      var el = document.createElement("a");
+      el.href = "#";
       el.innerHTML = i;
 
       if (i === pagination.current) {
-        el.className = 'on';
+        el.className = "on";
       } else {
         el.onclick = (function (i) {
           return function () {
@@ -184,7 +189,7 @@ const makeMap = () => {
   // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
   // 인포윈도우에 장소명을 표시합니다
   function displayInfowindow(marker, title) {
-    var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+    var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
 
     infowindow.setContent(content);
     infowindow.open(map, marker);
@@ -197,16 +202,21 @@ const makeMap = () => {
     }
   }
 
-  const insert = parent => {
+  const insert = (parent) => {
+    removeMarker();
     parent.append(mapContainer);
     map.relayout();
-    mapContainer.firstChild.style.left = 'auto';
+    mapContainer.firstChild.style.left = "auto";
   };
+  const marker = (stores) => {
+    console.log(stores);
+    let positions = stores.map(({ title, x, y }) => ({
+      title,
+      latlng: new kakao.maps.LatLng(y, x),
+    }));
 
-  const marker = stores => {
-    let positions = stores.map(({ title, x, y }) => ({ title, latlng: new kakao.maps.LatLng(y, x) }));
-
-    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
+    var imageSrc =
+      "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
     for (var i = 0; i < positions.length; i++) {
       var imageSize = new kakao.maps.Size(24, 35);
@@ -224,8 +234,10 @@ const makeMap = () => {
     }
 
     document
-      .querySelectorAll('.info-window')
-      .forEach(window => console.log(window.parentElement.parentElement.style.width));
+      .querySelectorAll(".info-window")
+      .forEach((window) =>
+        console.log(window.parentElement.parentElement.style.width)
+      );
 
     map.setCenter(new kakao.maps.LatLng(stores[0].y, stores[0].x));
   };
@@ -234,7 +246,7 @@ const makeMap = () => {
 const loadMap = () => {
   appendKakaoAPI();
 
-  window.addEventListener('load', () => {
+  window.addEventListener("load", () => {
     window.kakao.maps.load(() => {
       kakao.setMap = makeMap();
     });

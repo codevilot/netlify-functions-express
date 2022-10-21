@@ -1,67 +1,73 @@
-import createElement from '../utils/createElement.js';
-import { db } from '../utils/firebase.js';
-import render from '../utils/render.js';
-import Nav from './nav.js';
+import createElement from "../utils/createElement.js";
+import { db } from "../utils/firebase.js";
+import render from "../utils/render.js";
+import Nav from "./nav.js";
 
-const Voting = async params => {
-  const isOwner = owner => owner === window.localStorage.getItem('username');
+const Voting = async (params) => {
+  const isOwner = (owner) => owner === window.localStorage.getItem("username");
 
-  const isVoted = voteId => {
-    const voteList = JSON.parse(window.localStorage.getItem('voteList')) ?? [];
+  const isVoted = (voteId) => {
+    const voteList = JSON.parse(window.localStorage.getItem("voteList")) ?? [];
     return voteList.includes(voteId);
   };
 
-  const getVoteItem = async id => {
-    const doc = await db.collection('votes').where('id', '==', id).get();
+  const getVoteItem = async (id) => {
+    const doc = await db.collection("votes").where("id", "==", id).get();
     let voteItem = {};
-    doc.forEach(docs => {
+    doc.forEach((docs) => {
       voteItem = docs.data();
     });
-    kakao.setMap.marker(voteItem.stores);
 
     return voteItem;
   };
 
-  const addVoteList = newVote => {
-    const voteList = JSON.parse(window.localStorage.getItem('voteList')) ?? [];
-    window.localStorage.setItem('voteList', JSON.stringify([...voteList, newVote]));
+  const addVoteList = (newVote) => {
+    const voteList = JSON.parse(window.localStorage.getItem("voteList")) ?? [];
+    window.localStorage.setItem(
+      "voteList",
+      JSON.stringify([...voteList, newVote])
+    );
   };
 
-  const updateSelectedStoreVoteCount = async voteId => {
-    const selectedStoreList = [...document.querySelectorAll('.voting-btn')]
-      .filter($checkbox => $checkbox.checked)
-      .map($checkbox => $checkbox.id);
-    const newStoreList = voteItem.stores.map(store =>
-      selectedStoreList.includes(store.id) ? { ...store, countVote: store.countVote + 1 } : store
+  const updateSelectedStoreVoteCount = async (voteId) => {
+    const selectedStoreList = [...document.querySelectorAll(".voting-btn")]
+      .filter(($checkbox) => $checkbox.checked)
+      .map(($checkbox) => $checkbox.id);
+    const newStoreList = voteItem.stores.map((store) =>
+      selectedStoreList.includes(store.id)
+        ? { ...store, countVote: store.countVote + 1 }
+        : store
     );
-    await db.collection('votes').doc(voteId).update({ stores: newStoreList });
+    await db.collection("votes").doc(voteId).update({ stores: newStoreList });
   };
 
   const routeHome = () => {
-    const HOME_PATH = '/';
+    const HOME_PATH = "/";
     render({ path: HOME_PATH });
     window.history.pushState(null, null, HOME_PATH);
   };
 
-  const handleCompleteVote = async e => {
-    if (!e.target.matches('.end-voting')) return;
+  const handleCompleteVote = async (e) => {
+    if (!e.target.matches(".end-voting")) return;
 
-    const selectedStoreList = [...document.querySelectorAll('.voting-btn')].filter($checkbox => $checkbox.checked);
+    const selectedStoreList = [
+      ...document.querySelectorAll(".voting-btn"),
+    ].filter(($checkbox) => $checkbox.checked);
     if (selectedStoreList.length === 0) {
-      alert('투표한 목록이 없습니다');
+      alert("투표한 목록이 없습니다");
       return;
     }
 
     addVoteList(params);
     await updateSelectedStoreVoteCount(params);
 
-    alert('투표가 완료되었습니다!');
+    alert("투표가 완료되었습니다!");
 
     routeHome();
   };
 
-  const selectOnlyOne = $input => {
-    [...document.querySelectorAll('.voting-btn')].forEach(checkbox => {
+  const selectOnlyOne = ($input) => {
+    [...document.querySelectorAll(".voting-btn")].forEach((checkbox) => {
       checkbox.checked = checkbox === $input;
     });
   };
@@ -115,20 +121,25 @@ const Voting = async params => {
   `);
 
   const voteItem = await getVoteItem(params);
+  kakao.vote = voteItem.stores;
 
-  window.addEventListener('click', handleCompleteVote);
+  window.addEventListener("click", handleCompleteVote);
 
-  window.addEventListener('click', e => {
-    if (!e.target.matches('.voting-btn')) return;
+  window.addEventListener("click", (e) => {
+    if (!e.target.matches(".voting-btn")) return;
 
-    if (voteItem.voteType === '단일투표') selectOnlyOne(e.target);
+    if (voteItem.voteType === "단일투표") selectOnlyOne(e.target);
 
-    [...document.querySelectorAll('.voting-btn')].forEach(checkbox => {
-      checkbox.closest('.store-card').classList.toggle('selected-vote', checkbox.checked);
+    [...document.querySelectorAll(".voting-btn")].forEach((checkbox) => {
+      checkbox
+        .closest(".store-card")
+        .classList.toggle("selected-vote", checkbox.checked);
     });
   });
 
-  return !isVoted(params) || isOwner(voteItem.owner) ? domStr(voteItem) : endVote();
+  return !isVoted(params) || isOwner(voteItem.owner)
+    ? domStr(voteItem)
+    : endVote();
 };
 
 export default Voting;
